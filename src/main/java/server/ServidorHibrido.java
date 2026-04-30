@@ -107,7 +107,10 @@ public class ServidorHibrido {
             while (true) {
                 nombre = in.readLine();
                 if (nombre == null) return;
-                if (mapaTCP.size() + mapaUDP.size() >= MAX_CLIENTES) {
+                // validación de nombre de usuario
+                if (!nombre.matches("^[a-zA-Z0-9._]+$")) {
+                    out.println("ERROR_FORMATO_INVALIDO"); // El cliente recibe aviso
+                } else if (mapaTCP.size() + mapaUDP.size() >= MAX_CLIENTES) {
                     out.println("ERROR_SERVIDOR_LLENO");
                 } else if (nombreOcupado(nombre)) {
                     out.println("ERROR_YA_EXISTE");
@@ -160,7 +163,10 @@ public class ServidorHibrido {
                 if (txt.startsWith("JOIN:")) {
                     String n = txt.substring(5);//Depuramos el nombre//
                     byte[] resp;
-                    if (mapaTCP.size() + mapaUDP.size() >= MAX_CLIENTES) resp = "ERROR_LLENO".getBytes();
+                    // Validacion de nombre de usuario
+                    if (!n.matches("^[a-zA-Z0-9._]+$")) {
+                        resp = "ERROR_FORMATO_INVALIDO".getBytes();//Avisamos al cliente/
+                    }else if (mapaTCP.size() + mapaUDP.size() >= MAX_CLIENTES) resp = "ERROR_LLENO".getBytes();
                     else if (nombreOcupado(n)) resp = "ERROR_YA_EXISTE".getBytes();
                     else {
                         mapaUDP.put(id, n);
